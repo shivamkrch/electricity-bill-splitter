@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Electricity Bill Splitter</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
+      crossorigin="anonymous"
+    />
+    <style>
+      .shown-on-result {
+        display: none;
+      }
+
+      h6 {
+        font-size: 1.15rem;
+      }
+
+      @media print {
+        .pagebreak {
+          page-break-before: always;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container py-5">
+      <h3>
+        Electricity Bill
+        <span style="float: right">
+          <button
+            class="btn btn-danger btn-sm mx-2 px-3 d-print-none"
+            id="printBtn"
+          >
+            Print
+          </button>
+          <select
+            class="form-select form-select-sm"
+            style="display: inline; width: auto"
+            aria-label="Small select example"
+          >
+            <option selected>Select Month</option>
+            <option>January</option>
+            <option>February</option>
+            <option>March</option>
+            <option>April</option>
+            <option>May</option>
+            <option>June</option>
+            <option>July</option>
+            <option>August</option>
+            <option>September</option>
+            <option>October</option>
+            <option>November</option>
+            <option>December</option>
+          </select>
+        </span>
+      </h3>
+      <hr />
+      <form id="billSplitterForm" class="text-center">
+        <div class="container-fluid my-4">
+          <h5 style="text-align: left">Main Meter Reading</h5>
+          <div class="row mt-4">
+            <div class="col-2"></div>
+            <div class="col-3">
+              <h6>Current</h6>
+            </div>
+            <div class="col-3">
+              <h6>Previous</h6>
+            </div>
+          </div>
+          <div class="row mt-4">
+            <div class="col-2">
+              <h6>Units</h6>
+            </div>
+            <div class="col-3">
+              <input
+                type="number"
+                step="0.01"
+                class="form-control form-control-sm"
+                id="currUnits"
+                required
+              />
+            </div>
+            <div class="col-3">
+              <input
+                type="number"
+                step="0.01"
+                class="form-control form-control-sm"
+                id="prevUnits"
+                required
+              />
+            </div>
+          </div>
+          <div class="row mt-4">
+            <div class="col-2">
+              <h6>Balance</h6>
+            </div>
+            <div class="col-3">
+              <input
+                type="number"
+                step="0.01"
+                class="form-control form-control-sm"
+                id="currBalance"
+                required
+              />
+            </div>
+            <div class="col-3">
+              <input
+                type="number"
+                step="0.01"
+                class="form-control form-control-sm"
+                id="prevBalance"
+                required
+              />
+            </div>
+          </div>
+          <div class="row mt-4">
+            <div class="col-2">
+              <h6>
+                <label for="rechargeAmount" class="form-label">Recharge</label>
+              </h6>
+            </div>
+            <div class="col-3">
+              <input
+                type="number"
+                step="0.01"
+                class="form-control form-control-sm"
+                id="rechargeAmount"
+                required
+              />
+            </div>
+          </div>
+          <div
+            class="border border-primary rounded mt-3 p-2 shown-on-result"
+            id="mainMeterResults"
+            style="text-align: left"
+          >
+            <div>Units Consumed: <b id="unitsConsumed" class="mx-2">0</b></div>
+            <div>
+              Total Cost: <b class="mx-2">₹ <span id="totalCost">0</span></b>
+            </div>
+            <div>
+              Cost per unit:
+              <b class="mx-2">₹ <span id="costPerUnit">0</span></b>
+            </div>
+          </div>
+        </div>
+        <div class="container-fluid my-4" id="flatMeterReadings">
+          <h5 style="text-align: left">
+            Flat Meter Readings
+            <span
+              style="display: inline; width: auto; float: right"
+              class="d-print-none"
+            >
+              <label for="numFlats" class="form-label"><h6>Flats</h6> </label>
+              <input
+                type="number"
+                step="0.01"
+                id="numFlats"
+                class="form-control form-control-sm mx-2"
+                min="0"
+                max="10"
+                value="3"
+                style="display: inline; width: 100px; float: right"
+                required
+              />
+            </span>
+          </h5>
+          <div class="row mt-4">
+            <div class="col-2"></div>
+            <div class="col-3">
+              <h6>Current</h6>
+            </div>
+            <div class="col-3">
+              <h6>Previous</h6>
+            </div>
+            <div class="col-3 shown-on-result">
+              <h6>Units Consumed</h6>
+            </div>
+          </div>
+          <div id="flatReadingsForm"></div>
+          <div class="row mt-4 shown-on-result" id="flatTotalRow">
+            <div class="col-2"></div>
+            <div class="col-3"></div>
+            <div class="col-3">
+              <h6 style="text-align: right">Total Units</h6>
+            </div>
+            <div class="col-3 border-top pt-2 shown-on-result">
+              <h6 id="flatUnits"></h6>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-3 justify-content-center d-print-none">
+          <div class="col-auto">
+            <input
+              type="submit"
+              class="btn btn-primary mx-2"
+              value="Calculate"
+            />
+          </div>
+          <div class="col-auto">
+            <input type="reset" class="btn btn-secondary mx-2" value="Reset" />
+          </div>
+        </div>
+      </form>
+      <div
+        class="border border-primary rounded mt-3 p-2 shown-on-result"
+        id="commonUnitsResults"
+      >
+        <div>Common Units: <b id="commonUnits" class="mx-2">0</b></div>
+        <div>
+          Total Common Cost:
+          <b class="mx-2">₹ <span id="totalCommonCost">0</span></b>
+        </div>
+        <div>
+          Common Cost per Flat:
+          <b class="mx-2">₹ <span id="commonCostPerFlat">0</span></b>
+        </div>
+      </div>
+      <div
+        class="border border-primary rounded mt-5 p-2 pt-3 shown-on-result text-center pagebreak"
+        id="flatResults"
+      >
+        <h5 style="text-align: left">Flat Split</h5>
+        <div class="row mt-4">
+          <div class="col-2"></div>
+          <div class="col-3">
+            <h6>Self</h6>
+          </div>
+          <div class="col-3">
+            <h6>Common</h6>
+          </div>
+          <div class="col-3">
+            <h6>Total Cost</h6>
+          </div>
+        </div>
+        <div id="flatWiseResults"></div>
+        <div class="row mt-4 shown-on-result" id="flatTotalCostRow">
+          <div class="col-2"></div>
+          <div class="col-3"></div>
+          <div class="col-3">
+            <h6 style="text-align: right">Total Cost</h6>
+          </div>
+          <div class="col-3 border-top pt-2 shown-on-result">
+            <h6>₹ <span id="totalFlatCost">0</span></h6>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+      crossorigin="anonymous"
+    ></script>
+    <script src="./ElectricityBillSplitter.js"></script>
+    <script src="./script.js"></script>
+  </body>
+</html>
