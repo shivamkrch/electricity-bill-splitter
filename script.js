@@ -3,21 +3,21 @@ function renderFlatReadingsForm(num) {
   flatMeterReadings.innerHTML = "";
   for (let i = 1; i <= num; ++i) {
     flatMeterReadings.innerHTML += `
-            <div class="row mt-4">
-                <div class="col-2">
-                    <h6>Flat ${i}</h6>
-                </div>
-                <div class="col-3">
-                    <input type="number" step="0.01" class="form-control form-control-sm" id="currFlat${i}Units" required />
-                </div>
-                <div class="col-3">
-                    <input type="number" step="0.01" class="form-control form-control-sm" id="prevFlat${i}Units" required />
-                </div>
-                <div class="col-3 text-center shown-on-result">
-                    <h6 id="flat${i}Units"></h6>
-                </div>
+        <div class="row mt-4">
+            <div class="col-3">
+                <h6>Flat ${i}</h6>
             </div>
-        `;
+            <div class="col-3">
+                <input type="number" step="0.01" class="form-control form-control-sm" id="currFlat${i}Units" required />
+            </div>
+            <div class="col-3">
+                <input type="number" step="0.01" class="form-control form-control-sm" id="prevFlat${i}Units" required />
+            </div>
+            <div class="col-3 text-center shown-on-result">
+                <h6 id="flat${i}Units"></h6>
+            </div>
+        </div>
+    `;
   }
 }
 
@@ -26,21 +26,21 @@ function renderFlatWiseResults(flatWiseSplit) {
   flatWiseResults.innerHTML = "";
   for (let i = 0; i < flatWiseSplit.length; ++i) {
     flatWiseResults.innerHTML += `
-            <div class="row mt-4">
-                <div class="col-2">
-                    <h6>Flat ${i + 1}</h6>
-                </div>
-                <div class="col-3">
-                  <b>₹ ${flatWiseSplit[i].cost}</b>
-                </div>
-                <div class="col-3">
-                  ₹ ${flatWiseSplit[i].commonCost}
-                </div>
-                <div class="col-3">
-                    <h6>₹ ${flatWiseSplit[i].totalCost}</h6>
-                </div>
-            </div>
-        `;
+      <div class="row mt-4">
+          <div class="col-3">
+              <h6>Flat ${i + 1}</h6>
+          </div>
+          <div class="col-3">
+            <b>₹ ${flatWiseSplit[i].cost}</b>
+          </div>
+          <div class="col-3">
+            ₹ ${flatWiseSplit[i].commonCost}
+          </div>
+          <div class="col-3">
+              <h6>₹ ${flatWiseSplit[i].totalCost}</h6>
+          </div>
+      </div>
+  `;
     document.getElementById(`flat${i + 1}Units`).innerText =
       flatWiseSplit[i].unitsConsumed;
   }
