@@ -6,6 +6,7 @@ export interface IMeterReading {
 export interface IMainMeterReading {
   balance: IMeterReading;
   unitsConsumed: IMeterReading;
+  arrearBalance: IMeterReading;
   recharge: number;
 }
 
@@ -24,8 +25,9 @@ export class SplitResult {
   unitsConsumedByFlats: number;
   totalCostByFlats: number;
   remainingUnits: number;
-  remainingCost: number;
-  remainingCostPerFlat: number;
+  // arrearDeducted: number;
+  commonCost: number;
+  commonCostPerFlat: number;
   flatWiseSplit: IFlatSplit[];
 
   public constructor(err?: string) {
@@ -36,13 +38,14 @@ export class SplitResult {
     this.unitsConsumedByFlats = 0;
     this.totalCostByFlats = 0;
     this.remainingUnits = 0;
-    this.remainingCost = 0;
-    this.remainingCostPerFlat = 0;
+    this.commonCostPerFlat = 0;
+    // this.arrearDeducted = 0;
+    this.commonCost = 0;
     this.flatWiseSplit = [];
   }
 }
 
-function formatDecimalValues(num: number) {
+function formatDecimalValue(num: number) {
   return parseFloat(num.toFixed(2));
 }
 
@@ -60,16 +63,20 @@ export function splitElectricityBill(
     );
   }
 
-  splitResult.totalUnitsConsumed =
-    mainMeterReading.unitsConsumed.curr - mainMeterReading.unitsConsumed.prev;
+  splitResult.totalUnitsConsumed = formatDecimalValue(
+    mainMeterReading.unitsConsumed.curr - mainMeterReading.unitsConsumed.prev
+  );
+  // splitResult.arrearDeducted = formatDecimalValue(
+  //   mainMeterReading.arrearBalance.prev - mainMeterReading.arrearBalance.curr
+  // );
 
-  splitResult.totalCost = formatDecimalValues(
+  splitResult.totalCost = formatDecimalValue(
     mainMeterReading.balance.prev +
       mainMeterReading.recharge -
       mainMeterReading.balance.curr
   );
 
-  splitResult.costPerUnit = formatDecimalValues(
+  splitResult.costPerUnit = formatDecimalValue(
     splitResult.totalCost / splitResult.totalUnitsConsumed
   );
 
@@ -87,13 +94,13 @@ export function splitElectricityBill(
       );
     }
 
-    flatSplit.unitsConsumed = formatDecimalValues(
+    flatSplit.unitsConsumed = formatDecimalValue(
       flatReading.curr - flatReading.prev
     );
-    flatSplit.cost = formatDecimalValues(
+    flatSplit.cost = formatDecimalValue(
       flatSplit.unitsConsumed * splitResult.costPerUnit
     );
-    flatSplit.totalCost = formatDecimalValues(
+    flatSplit.totalCost = formatDecimalValue(
       flatSplit.cost + flatSplit.commonCost
     );
 
@@ -103,25 +110,24 @@ export function splitElectricityBill(
     splitResult.totalCostByFlats += flatSplit.cost;
   }
 
-  splitResult.unitsConsumedByFlats = formatDecimalValues(
-    splitResult.unitsConsumedByFlats
+  splitResult.totalCostByFlats = formatDecimalValue(
+    splitResult.totalCostByFlats
   );
 
-  splitResult.remainingUnits = formatDecimalValues(
+  splitResult.remainingUnits = formatDecimalValue(
     splitResult.totalUnitsConsumed - splitResult.unitsConsumedByFlats
   );
-  splitResult.remainingCost = formatDecimalValues(
+  splitResult.commonCost = formatDecimalValue(
     splitResult.remainingUnits * splitResult.costPerUnit
   );
 
-  splitResult.remainingCostPerFlat = formatDecimalValues(
-    (splitResult.remainingUnits / flatWiseReading.length) *
-      splitResult.costPerUnit
+  splitResult.commonCostPerFlat = formatDecimalValue(
+    splitResult.commonCost / flatWiseReading.length
   );
 
   for (const flatSplit of splitResult.flatWiseSplit) {
-    flatSplit.commonCost = splitResult.remainingCostPerFlat;
-    flatSplit.totalCost = formatDecimalValues(
+    flatSplit.commonCost = splitResult.commonCostPerFlat;
+    flatSplit.totalCost = formatDecimalValue(
       flatSplit.cost + flatSplit.commonCost
     );
   }

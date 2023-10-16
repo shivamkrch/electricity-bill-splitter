@@ -58,6 +58,10 @@ function onFormSubmit(e) {
       prev: prevUnits.valueAsNumber,
       curr: currUnits.valueAsNumber
     },
+    // arrearBalance: {
+    //   prev: prevArrearBalance.valueAsNumber,
+    //   curr: currArrearBalance.valueAsNumber
+    // },
     recharge: rechargeAmount.valueAsNumber
   };
 
@@ -81,14 +85,17 @@ function onFormSubmit(e) {
 
   unitsConsumed.innerText = splitResult.totalUnitsConsumed;
   totalCost.innerText = splitResult.totalCost;
+  totalCost2.innerText = splitResult.totalCost;
   costPerUnit.innerText = splitResult.costPerUnit;
+  // arrearDeducted.innerText = splitResult.arrearDeducted;
 
   flatUnits.innerText = splitResult.unitsConsumedByFlats;
   totalFlatCost.innerText = splitResult.totalCostByFlats;
 
   commonUnits.innerText = splitResult.remainingUnits;
-  totalCommonCost.innerText = splitResult.remainingCost;
-  commonCostPerFlat.innerText = splitResult.remainingCostPerFlat;
+  totalCommonCost.innerText = splitResult.commonCost;
+  totalCommonCost2.innerText = splitResult.commonCost;
+  commonCostPerFlat.innerText = splitResult.commonCostPerFlat;
 
   renderFlatWiseResults(splitResult.flatWiseSplit);
 

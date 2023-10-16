@@ -117,6 +117,29 @@
               />
             </div>
           </div>
+          <!-- <div class="row mt-4">
+            <div class="col-3">
+              <h6>Arrear Balance</h6>
+            </div>
+            <div class="col-3">
+              <input
+                type="number"
+                step="0.01"
+                class="form-control form-control-sm"
+                id="currArrearBalance"
+                required
+              />
+            </div>
+            <div class="col-3">
+              <input
+                type="number"
+                step="0.01"
+                class="form-control form-control-sm"
+                id="prevArrearBalance"
+                required
+              />
+            </div>
+          </div> -->
           <div class="row mt-4">
             <div class="col-3">
               <h6>
@@ -146,6 +169,10 @@
               Cost per unit:
               <b class="mx-2">₹ <span id="costPerUnit">0</span></b>
             </div>
+            <!-- <div>
+              Arrear Deducted:
+              <b class="mx-2">₹ <span id="arrearDeducted">0</span></b>
+            </div> -->
           </div>
         </div>
         <div class="container-fluid my-4" id="flatMeterReadings">
@@ -238,14 +265,18 @@
           </div>
         </div>
         <div id="flatWiseResults"></div>
-        <div class="row mt-4 shown-on-result" id="flatTotalCostRow">
-          <div class="col-3"></div>
-          <div class="col-3"></div>
-          <div class="col-3 pt-2">
-            <h6 style="text-align: right">Total Cost</h6>
+        <div class="row mt-4" id="flatTotalCostRow">
+          <div class="col-3 border-top pt-2">
+            <h6>Total Cost</h6>
           </div>
-          <div class="col-3 border-top pt-2 shown-on-result">
+          <div class="col-3 border-top pt-2">
             <h6>₹ <span id="totalFlatCost">0</span></h6>
+          </div>
+          <div class="col-3 border-top pt-2">
+            <h6>₹ <span id="totalCommonCost2">0</span></h6>
+          </div>
+          <div class="col-3 border-top pt-2">
+            <h6>₹ <span id="totalCost2">0</span></h6>
           </div>
         </div>
       </div>

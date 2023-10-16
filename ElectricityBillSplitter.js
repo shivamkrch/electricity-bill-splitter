@@ -8,17 +8,16 @@ var SplitResult = /** @class */ (function () {
     this.unitsConsumedByFlats = 0;
     this.totalCostByFlats = 0;
     this.remainingUnits = 0;
-    this.remainingCost = 0;
-    this.remainingCostPerFlat = 0;
+    this.commonCostPerFlat = 0;
+    // this.arrearDeducted = 0;
+    this.commonCost = 0;
     this.flatWiseSplit = [];
   }
   return SplitResult;
 })();
-
-function formatDecimalValues(num) {
+function formatDecimalValue(num) {
   return parseFloat(num.toFixed(2));
 }
-
 function splitElectricityBill(mainMeterReading, flatWiseReading) {
   var splitResult = new SplitResult(undefined);
   if (
@@ -33,14 +32,18 @@ function splitElectricityBill(mainMeterReading, flatWiseReading) {
         .concat(mainMeterReading.unitsConsumed.curr, ").")
     );
   }
-  splitResult.totalUnitsConsumed =
-    mainMeterReading.unitsConsumed.curr - mainMeterReading.unitsConsumed.prev;
-  splitResult.totalCost = formatDecimalValues(
+  splitResult.totalUnitsConsumed = formatDecimalValue(
+    mainMeterReading.unitsConsumed.curr - mainMeterReading.unitsConsumed.prev
+  );
+  // splitResult.arrearDeducted = formatDecimalValue(
+  //   mainMeterReading.arrearBalance.prev - mainMeterReading.arrearBalance.curr
+  // );
+  splitResult.totalCost = formatDecimalValue(
     mainMeterReading.balance.prev +
       mainMeterReading.recharge -
       mainMeterReading.balance.curr
   );
-  splitResult.costPerUnit = formatDecimalValues(
+  splitResult.costPerUnit = formatDecimalValue(
     splitResult.totalCost / splitResult.totalUnitsConsumed
   );
   for (
@@ -62,36 +65,35 @@ function splitElectricityBill(mainMeterReading, flatWiseReading) {
           .concat(flatReading.curr, ").")
       );
     }
-    flatSplit.unitsConsumed = formatDecimalValues(
+    flatSplit.unitsConsumed = formatDecimalValue(
       flatReading.curr - flatReading.prev
     );
-    flatSplit.cost = formatDecimalValues(
+    flatSplit.cost = formatDecimalValue(
       flatSplit.unitsConsumed * splitResult.costPerUnit
     );
-    flatSplit.totalCost = formatDecimalValues(
+    flatSplit.totalCost = formatDecimalValue(
       flatSplit.cost + flatSplit.commonCost
     );
     splitResult.flatWiseSplit.push(flatSplit);
     splitResult.unitsConsumedByFlats += flatSplit.unitsConsumed;
     splitResult.totalCostByFlats += flatSplit.cost;
   }
-  splitResult.unitsConsumedByFlats = formatDecimalValues(
-    splitResult.unitsConsumedByFlats
+  splitResult.totalCostByFlats = formatDecimalValue(
+    splitResult.totalCostByFlats
   );
-  splitResult.remainingUnits = formatDecimalValues(
+  splitResult.remainingUnits = formatDecimalValue(
     splitResult.totalUnitsConsumed - splitResult.unitsConsumedByFlats
   );
-  splitResult.remainingCost = formatDecimalValues(
+  splitResult.commonCost = formatDecimalValue(
     splitResult.remainingUnits * splitResult.costPerUnit
   );
-  splitResult.remainingCostPerFlat = formatDecimalValues(
-    (splitResult.remainingUnits / flatWiseReading.length) *
-      splitResult.costPerUnit
+  splitResult.commonCostPerFlat = formatDecimalValue(
+    splitResult.commonCost / flatWiseReading.length
   );
   for (var _a = 0, _b = splitResult.flatWiseSplit; _a < _b.length; _a++) {
     var flatSplit = _b[_a];
-    flatSplit.commonCost = splitResult.remainingCostPerFlat;
-    flatSplit.totalCost = formatDecimalValues(
+    flatSplit.commonCost = splitResult.commonCostPerFlat;
+    flatSplit.totalCost = formatDecimalValue(
       flatSplit.cost + flatSplit.commonCost
     );
   }
